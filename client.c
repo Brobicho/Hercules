@@ -1,50 +1,62 @@
 /* ************************************************************************** */
 /*                                                          LE - /            */
 /*                                                              /             */
-/*   clitest.c                                        .::    .:/ .      .::   */
+/*   client.c                                         .::    .:/ .      .::   */
 /*                                                 +:+:+   +:    +:  +:+:+    */
 /*   By: brobicho <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/02/16 14:59:20 by brobicho     #+#   ##    ##    #+#       */
-/*   Updated: 2018/02/16 16:38:55 by brobicho    ###    #+. /#+    ###.fr     */
+/*   Updated: 2018/02/16 18:28:41 by quruiz      ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
 
 #include "server.h"
 
-void	ft_init_struct(struct sockaddr_in *serv_addr)
+static void		ft_client_start(int server_fd)
+{
+	char buff[256];
+
+	while (1)
+	{
+		bzero(buff, 256);
+		read(0, buff, 256);
+		if (!strncmp("close\n", buff, 6) || !strncmp("close\r\n", buff, 7))
+			break ;
+		send(server_fd, &buff, 256, 0);
+		bzero(buff, 256);
+		recv(server_fd, &buff, 256, 0);
+		printf("%s", buff);
+	}
+}
+
+static void		ft_init_struct(struct sockaddr_in *serv_addr, int port)
 {
 	serv_addr->sin_family = AF_INET;
-	serv_addr->sin_port = htons(25565);
+	serv_addr->sin_port = htons(port);
 	serv_addr->sin_addr.s_addr = INADDR_ANY;
 }
 
-int		main(void)
+int				main(int ac, char **av)
 {
 	int					server_fd;
 	int					ret;
 	struct sockaddr_in	serv_addr;
-	char				buff[256];
 
+	if (ac != 2)
+	{
+		ft_putendl("Usage : ./client [port]");
+		return (0);
+	}
 	server_fd = socket(AF_INET, SOCK_STREAM, 0);
-	ft_init_struct(&serv_addr);
+	ft_init_struct(&serv_addr, ft_atoi(av[1]));
 	ret = connect(server_fd, (struct sockaddr*)&serv_addr, sizeof(serv_addr));
 	if (ret == -1)
 	{
 		ft_putendl("Connection failed");
 		return (0);
 	}
-	while (1)
-	{
-		bzero(buff, 256);
-		read(0, buff, 256);
-		if (!strncmp("close", buff, 5))
-			break ;
-		send(server_fd, &buff, 256, 0);
-		bzero(buff, 256);
-		recv(server_fd, &buff, 256, 0);
-		ft_putstr(buff);
-	}
+	ft_client_start(server_fd);
+	close(server_fd);
 	return (0);
 }
