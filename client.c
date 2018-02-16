@@ -6,7 +6,7 @@
 /*   By: brobicho <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/02/16 14:59:20 by brobicho     #+#   ##    ##    #+#       */
-/*   Updated: 2018/02/16 18:28:41 by quruiz      ###    #+. /#+    ###.fr     */
+/*   Updated: 2018/02/16 19:27:12 by brobicho    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -19,14 +19,14 @@ static void		ft_client_start(int server_fd)
 
 	while (1)
 	{
-		bzero(buff, 256);
+		ft_bzero(buff, 256);
 		read(0, buff, 256);
 		if (!strncmp("close\n", buff, 6) || !strncmp("close\r\n", buff, 7))
 			break ;
 		send(server_fd, &buff, 256, 0);
-		bzero(buff, 256);
+		ft_bzero(buff, 256);
 		recv(server_fd, &buff, 256, 0);
-		printf("%s", buff);
+		write(1, &buff, 256);
 	}
 }
 
