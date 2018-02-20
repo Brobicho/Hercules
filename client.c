@@ -6,7 +6,7 @@
 /*   By: brobicho <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2018/02/16 14:59:20 by brobicho     #+#   ##    ##    #+#       */
-/*   Updated: 2018/02/16 19:27:12 by brobicho    ###    #+. /#+    ###.fr     */
+/*   Updated: 2018/02/20 18:23:32 by brobicho    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -21,7 +21,7 @@ static void		ft_client_start(int server_fd)
 	{
 		ft_bzero(buff, 256);
 		read(0, buff, 256);
-		if (!strncmp("close\n", buff, 6) || !strncmp("close\r\n", buff, 7))
+		if (!ft_strncmp("close\n", buff, 6) || !ft_strncmp("close\r\n", buff, 7))
 			break ;
 		send(server_fd, &buff, 256, 0);
 		ft_bzero(buff, 256);
